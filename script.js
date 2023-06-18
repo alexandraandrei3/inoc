@@ -1,39 +1,62 @@
-var gestureElement = document.getElementById('gesture-element');
-var gestureText = document.getElementById('gesture-text');
-var gestureFeedback = document.getElementById('gesture-feedback');
+// Obțineți elementul interactiv
+var interactiveElement = document.getElementById('interactive-element');
 
-// Funcția de gestionare a gestului de apăsare (tap)
-gestureElement.addEventListener('click', function() {
-  gestureText.textContent = 'Apăsat';
-  gestureFeedback.textContent = 'Gest: Apăsare';
+// Variabile pentru coordonatele gestului de glisare
+var startX, startY, endX, endY;
+
+// Adăugați un eveniment pentru începutul gestului de atingere
+interactiveElement.addEventListener('touchstart', function(event) {
+  startX = event.touches[0].clientX;
+  startY = event.touches[0].clientY;
 });
 
-// Funcția de gestionare a gestului de glisare spre stânga (swipe left)
-gestureElement.addEventListener('swipeleft', function() {
-  gestureText.textContent = 'Glisare spre stânga';
-  gestureFeedback.textContent = 'Gest: Glisare spre stânga';
+// Adăugați un eveniment pentru sfârșitul gestului de atingere
+interactiveElement.addEventListener('touchend', function(event) {
+  endX = event.changedTouches[0].clientX;
+  endY = event.changedTouches[0].clientY;
+  
+  // Calculați diferența de coordonate pe axele X și Y
+  var deltaX = endX - startX;
+  var deltaY = endY - startY;
+  
+  // Verificați gesturile de glisare
+  if (Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (deltaX > 0) {
+      // Gestul de glisare spre dreapta
+      showGestureFeedback('Swipe right');
+    } else {
+      // Gestul de glisare spre stânga
+      showGestureFeedback('Swipe left');
+    }
+  } else {
+    if (deltaY > 0) {
+      // Gestul de glisare în jos
+      showGestureFeedback('Swipe down');
+    } else {
+      // Gestul de glisare în sus
+      showGestureFeedback('Swipe up');
+    }
+  }
 });
 
-// Funcția de gestionare a gestului de glisare spre dreapta (swipe right)
-gestureElement.addEventListener('swiperight', function() {
-  gestureText.textContent = 'Glisare spre dreapta';
-  gestureFeedback.textContent = 'Gest: Glisare spre dreapta';
+// Adăugați un eveniment pentru gestul de apăsare
+interactiveElement.addEventListener('touchstart', function(event) {
+  // Verificați dacă gestul de apăsare este suficient de scurt
+  if (event.touches[0].radiusX < 10 && event.touches[0].radiusY < 10) {
+    showGestureFeedback('Tap');
+  }
 });
 
-// Funcția de gestionare a gestului de rostogolire în sus (swipe up)
-gestureElement.addEventListener('swipeup', function() {
-  gestureText.textContent = 'Rostogolire în sus';
-  gestureFeedback.textContent = 'Gest: Rostogolire în sus';
+// Adăugați un eveniment pentru gestul de pumn strâns
+interactiveElement.addEventListener('touchend', function(event) {
+  // Verificați dacă gestul de pumn strâns este suficient de scurt
+  if (event.changedTouches[0].radiusX < 10 && event.changedTouches[0].radiusY < 10) {
+    showGestureFeedback('Fist bump');
+  }
 });
 
-// Funcția de gestionare a gestului de rostogolire în jos (swipe down)
-gestureElement.addEventListener('swipedown', function() {
-  gestureText.textContent = 'Rostogolire în jos';
-  gestureFeedback.textContent = 'Gest: Rostogolire în jos';
-});
-
-// Funcția de gestionare a gestului de glisare (swipe)
-gestureElement.addEventListener('swipe', function() {
-  gestureText.textContent = 'Glisare';
-  gestureFeedback.textContent = 'Gest: Glisare';
-});
+// Funcția pentru a afișa feedback-ul gestului
+function showGestureFeedback(gesture) {
+  var gestureText = document.getElementById('gesture-text');
+  gestureText.textContent = gesture;
+}
